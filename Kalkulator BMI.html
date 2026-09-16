@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator BMI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .calculator {
+            background: white;
+            width: 380px;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #222;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 13px;
+            border: none;
+            border-radius: 10px;
+            background: #007bff;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        #wynik {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .niedowaga {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .norma {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .nadwaga {
+            background: #ffe5b4;
+            color: #8a4b08;
+        }
+
+        .otylosc {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .blad {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="calculator">
+        <h1>Kalkulator BMI</h1>
+
+        <label for="plec">Płeć:</label>
+        <select id="plec">
+            <option value="kobieta">Kobieta</option>
+            <option value="mezczyzna">Mężczyzna</option>
+        </select>
+
+        <label for="waga">Waga (kg):</label>
+        <input type="number" id="waga" placeholder="np. 70" min="1">
+
+        <label for="wzrost">Wzrost (cm):</label>
+        <input type="number" id="wzrost" placeholder="np. 175" min="1">
+
+        <button onclick="obliczBMI()">Oblicz BMI</button>
+
+        <div id="wynik"></div>
+    </div>
+
+    <script>
+        function obliczBMI() {
+            const plec = document.getElementById("plec").value;
+            const waga = parseFloat(document.getElementById("waga").value);
+            const wzrost = parseFloat(document.getElementById("wzrost").value);
+            const wynik = document.getElementById("wynik");
+
+            // Sprawdzenie poprawności danych
+            if (!waga || !wzrost || waga <= 0 || wzrost <= 0) {
+                wynik.style.display = "block";
+                wynik.className = "blad";
+                wynik.innerHTML = "Podaj poprawną wagę i wzrost.";
+                return;
+            }
+
+            // Zamiana wzrostu z cm na metry
+            const wzrostMetry = wzrost / 100;
+
+            // Wzór BMI
+            const bmi = waga / (wzrostMetry * wzrostMetry);
+
+            let kategoria = "";
+            let klasa = "";
+
+            if (bmi < 18.5) {
+                kategoria = "Niedowaga";
+                klasa = "niedowaga";
+            } else if (bmi < 25) {
+                kategoria = "Waga prawidłowa";
+                klasa = "norma";
+            } else if (bmi < 30) {
+                kategoria = "Nadwaga";
+                klasa = "nadwaga";
+            } else {
+                kategoria = "Otyłość";
+                klasa = "otylosc";
+            }
+
+            const plecTekst = plec === "kobieta"
+                ? "Kobieta"
+                : "Mężczyzna";
+
+            wynik.style.display = "block";
+            wynik.className = klasa;
+
+            wynik.innerHTML = `
+                Płeć: ${plecTekst}<br>
+                Twoje BMI: <strong>${bmi.toFixed(2)}</strong><br>
+                Kategoria: <strong>${kategoria}</strong>
+            `;
+        }
+    </script>
+
+</body>
+</html>
